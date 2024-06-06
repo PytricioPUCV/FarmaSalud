@@ -119,7 +119,7 @@ void agregarCliente(struct FarmaSalud *farmacia)
     }
     
     cls();
-    printf("Cliente agregado con exito.\n");
+    printf("Cliente agregado con éxito.\n");
     pause();
 }
 
@@ -174,7 +174,7 @@ void eliminarCliente(struct FarmaSalud *farmacia) {
     free(temp);
 
     cls();
-    printf("Cliente eliminado con exito.\n");
+    printf("Cliente eliminado con éxito.\n");
     pause();
 }
 
@@ -196,22 +196,22 @@ void agregarProductoACliente(struct FarmaSalud *farmacia) {
     }
 
     if (clienteActual->datosClientes->numCompras >= MAX_PRODUCTOS_POR_CLIENTE) {
-        printf("El cliente ha alcanzado el maximo numero de productos permitidos.\n");
+        printf("El cliente ha alcanzado el máximo número de productos permitidos.\n");
         pause();
         return;
     }
 
     struct Producto *nuevoProducto = (struct Producto *)malloc(sizeof(struct Producto));
-    printf("Ingrese codigo del producto: ");
+    printf("Ingrese código del producto: ");
     scanf("%s", nuevoProducto->codigo);
     nuevoProducto->nombreProducto = (char *)malloc(50 * sizeof(char));
     printf("Ingrese nombre del producto: ");
     scanf("%s", nuevoProducto->nombreProducto);
     nuevoProducto->descripcion = (char *)malloc(100 * sizeof(char));
-    printf("Ingrese descripcion del producto: ");
+    printf("Ingrese descripción del producto: ");
     scanf("%s", nuevoProducto->descripcion);
     nuevoProducto->categoria = (char *)malloc(50 * sizeof(char));
-    printf("Ingrese categoria del producto: ");
+    printf("Ingrese categoría del producto: ");
     scanf("%s", nuevoProducto->categoria);
     printf("Ingrese precio del producto: ");
     scanf("%d", &nuevoProducto->precio);
@@ -226,7 +226,7 @@ void agregarProductoACliente(struct FarmaSalud *farmacia) {
     scanf("%s", nuevoProducto->fechaCaducidad);
     printf("Ingrese cantidad del producto: ");
     scanf("%d", &nuevoProducto->cantidad);
-    printf("¿Requiere receta? (1-Si, 0-No): ");
+    printf("¿Requiere receta? (1-Sí, 0-No): ");
     scanf("%d", &nuevoProducto->requiereReceta);
 
     // Agregar el nuevo producto al array de compras del cliente
@@ -234,6 +234,6 @@ void agregarProductoACliente(struct FarmaSalud *farmacia) {
     clienteActual->datosClientes->numCompras++;
 
     cls();
-    printf("Producto agregado con exito al cliente.\n");
+    printf("Producto agregado con éxito al cliente.\n");
     pause();
 }

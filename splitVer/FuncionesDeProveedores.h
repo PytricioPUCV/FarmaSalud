@@ -39,7 +39,7 @@ void mostrarProductosProveedor(struct NodoArbolProducto *nodoProducto) {
 
     struct Producto *producto = nodoProducto->datosProducto;
     if (producto->requiereReceta) {
-        requiereReceta = "Si";
+        requiereReceta = "Sí";
     } else {
         requiereReceta = "No";
     }
@@ -65,8 +65,8 @@ void leerProveedores(struct FarmaSalud *farmacia) {
     while (nodoActual != NULL) {
         printf("ID: %d\n", nodoActual->datosProveedor->id);
         printf("Nombre: %s\n", nodoActual->datosProveedor->nombre);
-        printf("Direccion: %s\n", nodoActual->datosProveedor->direccion);
-        printf("Telefono: %s\n", nodoActual->datosProveedor->telefono);
+        printf("Dirección: %s\n", nodoActual->datosProveedor->direccion);
+        printf("Teléfono: %s\n", nodoActual->datosProveedor->telefono);
 
         // Mostrar productos del proveedor
         if (nodoActual->datosProveedor->productos == NULL) {
@@ -100,12 +100,12 @@ void crearProveedor(struct FarmaSalud *farmacia) {
     fgets(nuevoProveedor->nombre, 50, stdin);
     nuevoProveedor->nombre[strcspn(nuevoProveedor->nombre, "\n")] = 0;  // Eliminar el salto de línea
 
-    printf("Ingrese direccion del proveedor: ");
+    printf("Ingrese dirección del proveedor: ");
     nuevoProveedor->direccion = (char *)malloc(100 * sizeof(char));
     fgets(nuevoProveedor->direccion, 100, stdin);
     nuevoProveedor->direccion[strcspn(nuevoProveedor->direccion, "\n")] = 0;  // Eliminar el salto de línea
 
-    printf("Ingrese telefono del proveedor: ");
+    printf("Ingrese teléfono del proveedor: ");
     nuevoProveedor->telefono = (char *)malloc(15 * sizeof(char));
     fgets(nuevoProveedor->telefono, 15, stdin);
     nuevoProveedor->telefono[strcspn(nuevoProveedor->telefono, "\n")] = 0;  // Eliminar el salto de línea
@@ -115,7 +115,7 @@ void crearProveedor(struct FarmaSalud *farmacia) {
     agregarProveedorConsole(farmacia, nuevoNodo);
 
     cls();
-    printf("Proveedor agregado con exito.\n");
+    printf("Proveedor agregado con éxito.\n");
     pause();
 }
 
@@ -163,7 +163,7 @@ void eliminarProveedor(struct FarmaSalud *farmacia) {
     free(temp);
 
     cls();
-    printf("Proveedor eliminado con exito.\n");
+    printf("Proveedor eliminado con éxito.\n");
     pause();
 }
 
@@ -172,7 +172,7 @@ void agregarProductoProveedor(struct FarmaSalud *farmacia) {
 
     // Crear y llenar los datos del nuevo producto
     struct Producto *nuevoProducto = (struct Producto *)malloc(sizeof(struct Producto));
-    printf("Ingrese codigo del producto: ");
+    printf("Ingrese código del producto: ");
     scanf("%s", nuevoProducto->codigo);
     getchar(); // Para consumir el '\n' que queda en el buffer después de scanf
     nuevoProducto->nombreProducto = (char *)malloc(50 * sizeof(char));
@@ -182,12 +182,12 @@ void agregarProductoProveedor(struct FarmaSalud *farmacia) {
     quitarNuevaLinea(nuevoProducto->nombreProducto);
     nuevoProducto->descripcion = (char *)malloc(100 * sizeof(char));
     cls();
-    printf("Ingrese descripcion del producto: ");
+    printf("Ingrese descripción del producto: ");
     fgets(nuevoProducto->descripcion, 100, stdin);
     quitarNuevaLinea(nuevoProducto->descripcion);
     nuevoProducto->categoria = (char *)malloc(50 * sizeof(char));
     cls();
-    printf("Ingrese categoria del producto: ");
+    printf("Ingrese categoría del producto: ");
     fgets(nuevoProducto->categoria, 50, stdin);
     quitarNuevaLinea(nuevoProducto->categoria);
     cls();
@@ -218,7 +218,7 @@ void agregarProductoProveedor(struct FarmaSalud *farmacia) {
     nuevoProducto->cantidad = -1;
 
     cls();
-    printf("¿Requiere receta? (1-Si, 0-No): ");
+    printf("¿Requiere receta? (1-Sí, 0-No): ");
     scanf("%d", &nuevoProducto->requiereReceta);
 
     // Convertir idProveedor de char* a int
@@ -273,7 +273,7 @@ void agregarProductoProveedor(struct FarmaSalud *farmacia) {
     }
 
     cls();
-    printf("Producto agregado con exito al proveedor.\n");
+    printf("Producto agregado con éxito al proveedor.\n");
     pause();
 }
 

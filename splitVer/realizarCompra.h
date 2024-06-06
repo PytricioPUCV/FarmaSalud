@@ -82,7 +82,7 @@ void realizarCompra(struct FarmaSalud *farmacia) {
         return;
     }
 
-    printf("¿El cliente esta registrado? (1-Si, 0-No): ");
+    printf("¿El cliente está registrado? (1-Sí, 0-No): ");
     scanf("%d", &esClienteRegistrado);
 
     if (esClienteRegistrado) {
@@ -106,7 +106,7 @@ void realizarCompra(struct FarmaSalud *farmacia) {
     struct Producto *productosComprados[cantidadCompras];
     int cantidades[cantidadCompras];
     for (i = 0; i < cantidadCompras; i++) {
-        printf("Ingrese el codigo del producto %d: ", i + 1);
+        printf("Ingrese el código del producto %d: ", i + 1);
         scanf("%s", codigoProducto);
         printf("Ingrese la cantidad del producto %d: ", i + 1);
         scanf("%d", &cantidadProducto);
@@ -145,16 +145,19 @@ void realizarCompra(struct FarmaSalud *farmacia) {
         }
     }
 
+    // Incrementar el contador de ventas de la sucursal
+    sucursal->datosSucursal->cantidadDeVentas++;
+
     printf("\n=======================================\n");
     printf("                 FarmaSalud\n");
     printf("           La farmacia del pueblo\n");
-    printf("               Boleta Fisica\n");
+    printf("               Boleta Física\n");
     printf("=======================================\n");
     printf("Sucursal: %s\n", sucursal->datosSucursal->nombre);
     if (esClienteRegistrado) {
         printf("Cliente: %s\n", cliente->datosClientes->rutCliente);
     } else {
-        printf("Cliente: Compra anonima\n");
+        printf("Cliente: Compra anónima\n");
     }
     printf("---------------------------------------\n");
     printf("PRODUCTOS                CANTIDAD   PRECIO\n");
@@ -167,4 +170,5 @@ void realizarCompra(struct FarmaSalud *farmacia) {
     printf("=======================================\n");
 
     pause();
+    
 }
