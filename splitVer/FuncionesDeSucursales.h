@@ -1,4 +1,53 @@
-// 4. Funciones de sucursales
+void actualizarInventariosSucursales(struct FarmaSalud *farmacia) {
+    if (farmacia == NULL || farmacia->sucursales == NULL) {
+        printf("No hay sucursales registradas.\n");
+        return;
+    }
+
+    struct NodoSucursales *sucursalActual = farmacia->sucursales;
+
+    // Iterar sobre cada sucursal
+    do {
+        if (sucursalActual->datosSucursal == NULL || sucursalActual->datosSucursal->productos == NULL) {
+            sucursalActual = sucursalActual->sig;
+            continue;
+        }
+
+        struct NodoProducto *productoActual = sucursalActual->datosSucursal->productos; // Iniciar en el primer nodo (sin nodo fantasma)
+        while (productoActual != NULL) {
+            struct NodoProducto *siguienteProducto = productoActual->sig;
+            if (productoActual->datosProducto != NULL && productoActual->datosProducto->cantidad == 0) {
+                // Eliminar producto con cantidad 0
+                if (productoActual->ant != NULL) {
+                    productoActual->ant->sig = productoActual->sig;
+                } else {
+                    // Si es el primer producto, actualizamos el puntero inicial de productos
+                    sucursalActual->datosSucursal->productos = productoActual->sig;
+                }
+
+                if (productoActual->sig != NULL) {
+                    productoActual->sig->ant = productoActual->ant;
+                }
+
+                // Liberar memoria del producto
+                free(productoActual->datosProducto->nombreProducto);
+                free(productoActual->datosProducto->descripcion);
+                free(productoActual->datosProducto->categoria);
+                free(productoActual->datosProducto->idProveedor);
+                free(productoActual->datosProducto->lote);
+                free(productoActual->datosProducto->fechaCaducidad);
+                free(productoActual->datosProducto);
+                free(productoActual);
+            }
+            productoActual = siguienteProducto;
+        }
+        sucursalActual = sucursalActual->sig;
+    } while (sucursalActual != farmacia->sucursales);
+
+    printf("Inventarios actualizados. Productos con stock 0 eliminados.\n");
+}
+
+
 int espacioRestante(struct Sucursal *sucursal) {
     if (sucursal == NULL) {
         return -1;
@@ -27,8 +76,12 @@ void leerSucursales(struct FarmaSalud *farmacia) {
     do {
         printf("ID: %d\n", nodoActual->datosSucursal->id);
         printf("Nombre: %s\n", nodoActual->datosSucursal->nombre);
-        printf("Direccion: %s\n", nodoActual->datosSucursal->direccion);
+        printf("Dirección: %s\n", nodoActual->datosSucursal->direccion);
         printf("Cantidad de Ventas: %d\n", nodoActual->datosSucursal->cantidadDeVentas);
+        printf("Número de Registros de Envíos: %d\n", nodoActual->datosSucursal->numRegistros);
+        for (int i = 0; i < nodoActual->datosSucursal->numRegistros; i++) {
+            printf("\tRegistro de Envío %d: %s\n", i + 1, nodoActual->datosSucursal->registrosEnvios[i]);
+        }
 
         if (nodoActual->datosSucursal->productos != NULL) {
             printf("Productos:\n");
@@ -38,12 +91,16 @@ void leerSucursales(struct FarmaSalud *farmacia) {
                 printf("\tCantidad en stock: %d", productoNodo->datosProducto->cantidad);
                 printf("\tFecha de caducidad: %s", productoNodo->datosProducto->fechaCaducidad);
                 printf("\tLote: %s\n", productoNodo->datosProducto->lote);
+
+                // Comprobar si el producto tiene bajo stock
+                if (productoNodo->datosProducto->cantidad < 10) {
+                    printf("\t*** ALERTA: Bajo stock! ***\n");
+                }
+
                 productoNodo = productoNodo->sig;
             }
             printf("\n");
-        } 
-        else 
-        {
+        } else {
             printf("Sucursal sin productos\n");
         }
         
@@ -53,6 +110,7 @@ void leerSucursales(struct FarmaSalud *farmacia) {
     } while (nodoActual != farmacia->sucursales);
     pause();
 }
+
 
 struct NodoSucursales* crearSucursalConsole(int id, char* nombre, char* direccion, int capacidadAlmacenamiento) {
     struct NodoSucursales* nuevoNodo = (struct NodoSucursales*)malloc(sizeof(struct NodoSucursales));
@@ -65,12 +123,17 @@ struct NodoSucursales* crearSucursalConsole(int id, char* nombre, char* direccio
     nuevaSucursal->capacidadAlmacenamiento = capacidadAlmacenamiento;
     nuevaSucursal->productos = NULL;
     nuevaSucursal->productosVendidos = NULL; // Inicializar a NULL
-    
+    nuevaSucursal->numRegistros = 0; // Inicializar a 0
+    for (int i = 0; i < MAX_ENVIOS; i++) {
+        nuevaSucursal->registrosEnvios[i] = NULL; // Inicializar a NULL
+    }
+
     nuevoNodo->datosSucursal = nuevaSucursal;
     nuevoNodo->ant = nuevoNodo->sig = nuevoNodo;
     
     return nuevoNodo;
 }
+
 
 void agregarSucursalConsole(struct FarmaSalud *farmacia, struct NodoSucursales *nuevaSucursal) {
     if (farmacia->sucursales == NULL) {
@@ -96,7 +159,7 @@ struct NodoProducto* crearNodoProducto(struct Producto* producto) {
 
 void agregarProductoASucursal(struct Sucursal* sucursal, struct Producto* producto) {
     if (sucursal == NULL || producto == NULL) {
-        printf("Sucursal o producto no valido.\n");
+        printf("Sucursal o producto no válido.\n");
         return;
     }
 
@@ -113,8 +176,6 @@ void agregarProductoASucursal(struct Sucursal* sucursal, struct Producto* produc
     }
 }
 
-
-
 void crearSucursal(struct FarmaSalud *farmacia) {
     cls();
     struct NodoSucursales *nuevoNodo = (struct NodoSucursales*)malloc(sizeof(struct NodoSucursales));
@@ -128,7 +189,7 @@ void crearSucursal(struct FarmaSalud *farmacia) {
     printf("Ingrese nombre de la sucursal: ");
     nuevaSucursal->nombre = (char *)malloc(50 * sizeof(char));
     scanf("%s", nuevaSucursal->nombre);
-    printf("Ingrese direccion de la sucursal: ");
+    printf("Ingrese dirección de la sucursal: ");
     nuevaSucursal->direccion = (char *)malloc(100 * sizeof(char));
     scanf("%s", nuevaSucursal->direccion);
 
@@ -136,11 +197,15 @@ void crearSucursal(struct FarmaSalud *farmacia) {
     nuevaSucursal->capacidadAlmacenamiento = 0; // Cambiar si se necesita un valor específico
     nuevaSucursal->productos = NULL;
     nuevaSucursal->productosVendidos = NULL; // Inicializar a NULL
+    nuevaSucursal->numRegistros = 0; // Inicializar a 0
+    for (int i = 0; i < MAX_ENVIOS; i++) {
+        nuevaSucursal->registrosEnvios[i] = NULL; // Inicializar a NULL
+    }
 
     agregarSucursalConsole(farmacia, nuevoNodo);
 
     cls();
-    printf("Sucursal agregada con exito.\n");
+    printf("Sucursal agregada con éxito.\n");
     pause();
 }
 
@@ -192,15 +257,120 @@ void eliminarSucursal(struct FarmaSalud *farmacia) {
     // Liberar la memoria asociada a la sucursal
     free(temp->datosSucursal->nombre);
     free(temp->datosSucursal->direccion);
-    // Aquí podrías añadir código para liberar productos asociados si es necesario
+    for (int i = 0; i < temp->datosSucursal->numRegistros; i++) {
+        free(temp->datosSucursal->registrosEnvios[i]);
+    }
     free(temp->datosSucursal);
     free(temp);
 
     cls();
-    printf("Sucursal eliminada con exito.\n");
+    printf("Sucursal eliminada con éxito.\n");
     pause();
 }
 
+void mostrarSucursales(struct FarmaSalud *farmacia) {
+    struct NodoSucursales *sucursalActual = farmacia->sucursales;
+    if (sucursalActual == NULL) {
+        printf("No hay sucursales registradas.\n");
+        return;
+    }
+
+    do {
+        printf("ID: %d\n", sucursalActual->datosSucursal->id);
+        printf("Nombre: %s\n", sucursalActual->datosSucursal->nombre);
+        printf("Dirección: %s\n", sucursalActual->datosSucursal->direccion);
+        printf("Cantidad de Ventas: %d\n", sucursalActual->datosSucursal->cantidadDeVentas);
+        printf("Capacidad de Almacenamiento: %d / 10000\n", sucursalActual->datosSucursal->capacidadAlmacenamiento);
+        printf("Número de Registros de Envíos: %d\n", sucursalActual->datosSucursal->numRegistros);
+        for (int i = 0; i < sucursalActual->datosSucursal->numRegistros; i++) {
+            printf("\tRegistro de Envío %d: %s\n", i + 1, sucursalActual->datosSucursal->registrosEnvios[i]);
+        }
+        printf("--------------------------------------------------\n");
+        sucursalActual = sucursalActual->sig;
+    } while (sucursalActual != farmacia->sucursales);
+}
+
+// CODIGO NO AGREGADO AL GITHUB
+int compararFechasVencidas(char *fecha1, char *fecha2) {
+    int mes1, anio1, mes2, anio2;
+
+    sscanf(fecha1, "%d/%d", &mes1, &anio1);
+    sscanf(fecha2, "%d/%d", &mes2, &anio2);
+
+    if (anio1 < anio2) return -1;
+    if (anio1 > anio2) return 1;
+    if (mes1 < mes2) return -1;
+    if (mes1 > mes2) return 1;
+    return 0;
+}
+
+int validarFecha(const char *fecha) {
+    int mes, anio;
+    if (sscanf(fecha, "%d/%d", &mes, &anio) != 2) {
+        return 0;
+    }
+    if (mes < 1 || mes > 12) {
+        return 0;
+    }
+    return 1;
+}
+
+void eliminarProductosVencidos(struct Sucursal *sucursal, char *fechaLimite) {
+    if (sucursal == NULL || sucursal->productos == NULL) {
+        printf("Sucursal o productos no válidos.\n");
+        return;
+    }
+    if (!validarFecha(fechaLimite)) {
+        printf("Fecha de caducidad inválida.\n");
+        return;
+    }
+
+    struct NodoProducto *productoActual = sucursal->productos;
+    while (productoActual != NULL) {
+        struct NodoProducto *siguienteProducto = productoActual->sig;
+        if (compararFechasVencidas(productoActual->datosProducto->fechaCaducidad, fechaLimite) < 0) {
+            if (productoActual->ant != NULL) {
+                productoActual->ant->sig = productoActual->sig;
+            } else {
+                sucursal->productos = productoActual->sig;
+            }
+
+            if (productoActual->sig != NULL) {
+                productoActual->sig->ant = productoActual->ant;
+            }
+
+            free(productoActual->datosProducto->nombreProducto);
+            free(productoActual->datosProducto->descripcion);
+            free(productoActual->datosProducto->categoria);
+            free(productoActual->datosProducto->idProveedor);
+            free(productoActual->datosProducto->lote);
+            free(productoActual->datosProducto->fechaCaducidad);
+            free(productoActual->datosProducto);
+            free(productoActual);
+        }
+        productoActual = siguienteProducto;
+    }
+}
+
+void eliminarProductosVencidosDeTodasLasSucursales(struct FarmaSalud *farmacia, char *fechaLimite) {
+    if (farmacia == NULL || farmacia->sucursales == NULL) {
+        printf("No hay sucursales registradas.\n");
+        return;
+    }
+
+    if (!validarFecha(fechaLimite)) {
+        printf("Fecha de caducidad inválida.\n");
+        return;
+    }
+
+    struct NodoSucursales *sucursalActual = farmacia->sucursales;
+    do {
+        eliminarProductosVencidos(sucursalActual->datosSucursal, fechaLimite);
+        sucursalActual = sucursalActual->sig;
+    } while (sucursalActual != farmacia->sucursales);
+
+    printf("Productos vencidos eliminados de todas las sucursales correctamente.\n");
+}
 
 struct NodoSucursales* buscarSucursalPorID(struct FarmaSalud *farmacia, int idSucursal) {
     struct NodoSucursales *sucursalActual = farmacia->sucursales;
@@ -219,104 +389,34 @@ struct NodoSucursales* buscarSucursalPorID(struct FarmaSalud *farmacia, int idSu
     return NULL;
 }
 
-void mostrarSucursales(struct FarmaSalud *farmacia) {
-    struct NodoSucursales *sucursalActual = farmacia->sucursales;
-    if (sucursalActual == NULL) {
-        printf("No hay sucursales registradas.\n");
-        return;
-    }
-
-    struct NodoSucursales *inicio = sucursalActual;
-    printf("Sucursales disponibles:\n");
-    do {
-        printf("ID: %d, Nombre: %s\n", sucursalActual->datosSucursal->id, sucursalActual->datosSucursal->nombre);
-        sucursalActual = sucursalActual->sig;
-    } while (sucursalActual != inicio);
-    printf("\n");
-}
-
-void eliminarProductosVencidos(struct FarmaSalud* farmacia, int idSucursal, char* fechaEliminacion) {
-    struct NodoSucursales* nodoSucursal = farmacia->sucursales;
-    struct NodoProducto* nodoProducto;
-    struct NodoProducto* nodoTemporal;
-
-    if (idSucursal == -1) { // Eliminar productos vencidos de todas las sucursales
-        while (nodoSucursal != NULL) {
-            nodoProducto = nodoSucursal->datosSucursal->productos;
-            while (nodoProducto != NULL) {
-                if (compararFechas(nodoProducto->datosProducto->fechaCaducidad, fechaEliminacion) < 0) {
-                    // Eliminar el producto vencido
-                    nodoTemporal = nodoProducto;
-                    if (nodoProducto->ant == NULL) {
-                        nodoSucursal->datosSucursal->productos = nodoProducto->sig;
-                    } else {
-                        nodoProducto->ant->sig = nodoProducto->sig;
-                    }
-                    if (nodoProducto->sig != NULL) {
-                        nodoProducto->sig->ant = nodoProducto->ant;
-                    }
-                    free(nodoTemporal->datosProducto->nombreProducto);
-                    free(nodoTemporal->datosProducto->descripcion);
-                    free(nodoTemporal->datosProducto->categoria);
-                    free(nodoTemporal->datosProducto->idProveedor);
-                    free(nodoTemporal->datosProducto->lote);
-                    free(nodoTemporal->datosProducto->fechaCaducidad);
-                    free(nodoTemporal->datosProducto);
-                    free(nodoTemporal);
-                    nodoProducto = nodoProducto->sig;
-                } else {
-                    nodoProducto = nodoProducto->sig;
-                }
-            }
-            nodoSucursal = nodoSucursal->sig;
-        }
-    } else { // Eliminar productos vencidos de una sucursal específica
-        while (nodoSucursal != NULL) {
-            if (nodoSucursal->datosSucursal->id == idSucursal) {
-                nodoProducto = nodoSucursal->datosSucursal->productos;
-                while (nodoProducto != NULL) {
-                    if (compararFechas(nodoProducto->datosProducto->fechaCaducidad, fechaEliminacion) < 0) {
-                        // Eliminar el producto vencido
-                        nodoTemporal = nodoProducto;
-                        if (nodoProducto->ant == NULL) {
-                            nodoSucursal->datosSucursal->productos = nodoProducto->sig;
-                        } else {
-                            nodoProducto->ant->sig = nodoProducto->sig;
-                        }
-                        if (nodoProducto->sig != NULL) {
-                            nodoProducto->sig->ant = nodoProducto->ant;
-                        }
-                        free(nodoTemporal->datosProducto->nombreProducto);
-                        free(nodoTemporal->datosProducto->descripcion);
-                        free(nodoTemporal->datosProducto->categoria);
-                        free(nodoTemporal->datosProducto->idProveedor);
-                        free(nodoTemporal->datosProducto->lote);
-                        free(nodoTemporal->datosProducto->fechaCaducidad);
-                        free(nodoTemporal->datosProducto);
-                        free(nodoTemporal);
-                        nodoProducto = nodoProducto->sig;
-                    } else {
-                        nodoProducto = nodoProducto->sig;
-                    }
-                }
-                break;
-            }
-            nodoSucursal = nodoSucursal->sig;
-        }
-    }
-}
-
-void menuEliminarProductosVencidos(struct FarmaSalud* farmacia) {
+void menuEliminarProductosVencidos(struct FarmaSalud *farmacia) {
+    cls();
     int idSucursal;
-    char fechaEliminacion[11];
+    char fechaLimite[8];
 
-    printf("\nEliminar productos vencidos\n");
-    printf("Ingrese el ID de la sucursal (-1 para todas las sucursales): ");
+    mostrarSucursales(farmacia);
+    printf("Ingrese el ID de la sucursal (o -1 para todas las sucursales): ");
     scanf("%d", &idSucursal);
 
-    printf("Ingrese la fecha de vencimiento (DD/MM/YYYY): ");
-    scanf("%10s", fechaEliminacion);
+    do {
+        printf("Ingrese la fecha de vencimiento (MM/AAAA): ");
+        scanf("%s", fechaLimite);
 
-    eliminarProductosVencidos(farmacia, idSucursal, fechaEliminacion);
-    printf("Productos vencidos eliminados correctamente.\n");
+        if (!validarFecha(fechaLimite)) {
+            printf("Fecha de caducidad invalida. Por favor, ingrese una fecha válida.\n");
+        }
+    } while (!validarFecha(fechaLimite));
+
+    if (idSucursal == -1) {
+        eliminarProductosVencidosDeTodasLasSucursales(farmacia, fechaLimite);
+    } else {
+        struct NodoSucursales *sucursalNodo = buscarSucursalPorID(farmacia, idSucursal);
+        if (sucursalNodo == NULL) {
+            printf("Sucursal no encontrada.\n");
+            return;
+        }
+        eliminarProductosVencidos(sucursalNodo->datosSucursal, fechaLimite);
+        cls();
+        printf("Productos vencidos eliminados correctamente.\n");
+    }
 }
