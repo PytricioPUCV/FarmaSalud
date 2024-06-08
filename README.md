@@ -35,7 +35,7 @@ Primeros pasos
 	Para empezar a utilizar FarmaSalud, clone este repositorio y compile el código fuente utilizando su compilador de C preferido que soporte los requisitos de compatibilidad mencionados 	anteriormente.
 
 Autores y agradecimientos
-	FarmaSalud fue desarrollado como parte del curso INF2223-1 Estructuras de Datos de la Pontificia Universidad Católica de Valparaíso. Este proyecto fue creado por los siguientes 		estudiantes:
+	FarmaSalud fue desarrollado como parte del curso INF2223-1 Estructuras de Datos de la Pontificia Universidad Católica de Valparaíso. Este proyecto fue creado por los siguientes 	estudiantes:
 	Giovanni Ahumada
 	Bastián Mejías
 	Simón Vera
