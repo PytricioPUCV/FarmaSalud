@@ -1,0 +1,36 @@
+ - Error lens (corrige los errores del codigo)
+
+Name: Error Lens
+Id: usernamehw.errorlens
+Description: Improve highlighting of errors, warnings and other language diagnostics.
+Version: 3.17.0
+Publisher: Alexander
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=usernamehw.errorlens
+
+- vscode-pdf (leer el pdf)
+
+Name: vscode-pdf
+Id: tomoki1207.pdf
+Description: Display pdf file in VSCode.
+Version: 1.2.2
+Publisher: tomoki1207
+VS Marketplace Link: https://marketplace.visualstudio.com/items?itemName=tomoki1207.pdf
+
+
+- Compilador Turbo C 
+
+https://www.onlinegdb.com/online_c_compiler
+Habilitar la opcion de language en Turbo C
+
+- ChatGPT Code Copilot
+
+https://chatgpt.com/g/g-2DQzU5UZl-code-copilot
+
+- Informe
+
+https://docs.google.com/document/d/1QAbOabQdfY1oavinI0NzInlTi_CAsqqxpFqd3Mi2YHc/edit?usp=sharing
+
+- Compilar
+
+gcc proyectoC.c -o proyectoC
+./proyectoC

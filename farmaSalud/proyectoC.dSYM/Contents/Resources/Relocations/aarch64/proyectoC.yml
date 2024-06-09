@@ -1,0 +1,11 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/gioahumada/Documents/GitHub/farmaSalud/proyectoC'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100003878, symSize: 0x3C }
+  - { offsetInCU: 0x4D, offset: 0x4D, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100003878, symSize: 0x3C }
+  - { offsetInCU: 0x75, offset: 0x75, size: 0x8, addend: 0x0, symName: _menuPrincipal, symObjAddr: 0x3C, symBinAddr: 0x1000038B4, symSize: 0x120 }
+  - { offsetInCU: 0xA7, offset: 0xA7, size: 0x8, addend: 0x0, symName: _menuClientes, symObjAddr: 0x180, symBinAddr: 0x1000039F8, symSize: 0xF8 }
+  - { offsetInCU: 0xD9, offset: 0xD9, size: 0x8, addend: 0x0, symName: _menuSucursales, symObjAddr: 0x29C, symBinAddr: 0x100003B14, symSize: 0x118 }
+  - { offsetInCU: 0x10B, offset: 0x10B, size: 0x8, addend: 0x0, symName: _menuProveedores, symObjAddr: 0x3D8, symBinAddr: 0x100003C50, symSize: 0xF4 }
+...

@@ -1,0 +1,19 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     '/Users/gioahumada/Documents/GitHub/farmaSalud/main'
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _crearNodoProducto, symObjAddr: 0x0, symBinAddr: 0x1000034A8, symSize: 0x48 }
+  - { offsetInCU: 0x242, offset: 0x242, size: 0x8, addend: 0x0, symName: _crearNodoProducto, symObjAddr: 0x0, symBinAddr: 0x1000034A8, symSize: 0x48 }
+  - { offsetInCU: 0x278, offset: 0x278, size: 0x8, addend: 0x0, symName: _agregarProducto, symObjAddr: 0x48, symBinAddr: 0x1000034F0, symSize: 0xB4 }
+  - { offsetInCU: 0x2D4, offset: 0x2D4, size: 0x8, addend: 0x0, symName: _crearProducto, symObjAddr: 0xFC, symBinAddr: 0x1000035A4, symSize: 0xD0 }
+  - { offsetInCU: 0x388, offset: 0x388, size: 0x8, addend: 0x0, symName: _mostrarProductos, symObjAddr: 0x1CC, symBinAddr: 0x100003674, symSize: 0xC4 }
+  - { offsetInCU: 0x3BA, offset: 0x3BA, size: 0x8, addend: 0x0, symName: _crearNodoSucursal, symObjAddr: 0x290, symBinAddr: 0x100003738, symSize: 0x50 }
+  - { offsetInCU: 0x3F0, offset: 0x3F0, size: 0x8, addend: 0x0, symName: _agregarSucursal, symObjAddr: 0x2E0, symBinAddr: 0x100003788, symSize: 0xB4 }
+  - { offsetInCU: 0x44C, offset: 0x44C, size: 0x8, addend: 0x0, symName: _crearSucursal, symObjAddr: 0x394, symBinAddr: 0x10000383C, symSize: 0x68 }
+  - { offsetInCU: 0x4AC, offset: 0x4AC, size: 0x8, addend: 0x0, symName: _mostrarSucursales, symObjAddr: 0x3FC, symBinAddr: 0x1000038A4, symSize: 0xD8 }
+  - { offsetInCU: 0x4DE, offset: 0x4DE, size: 0x8, addend: 0x0, symName: _crearNodoProveedor, symObjAddr: 0x4D4, symBinAddr: 0x10000397C, symSize: 0x50 }
+  - { offsetInCU: 0x514, offset: 0x514, size: 0x8, addend: 0x0, symName: _agregarProveedor, symObjAddr: 0x524, symBinAddr: 0x1000039CC, symSize: 0xB4 }
+  - { offsetInCU: 0x570, offset: 0x570, size: 0x8, addend: 0x0, symName: _crearProveedor, symObjAddr: 0x5D8, symBinAddr: 0x100003A80, symSize: 0x68 }
+  - { offsetInCU: 0x5D0, offset: 0x5D0, size: 0x8, addend: 0x0, symName: _mostrarProveedores, symObjAddr: 0x640, symBinAddr: 0x100003AE8, symSize: 0xC8 }
+  - { offsetInCU: 0x602, offset: 0x602, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x708, symBinAddr: 0x100003BB0, symSize: 0x1FC }
+...
