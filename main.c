@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <conio.h>
 
 #define MAX_PRODUCTOS_POR_CLIENTE 10000
 #define MAX_ENVIOS 30000
@@ -347,8 +348,8 @@ void cls() {
 
 void pause() {
     printf("\nPresione Enter para continuar...\n");
-    while (getchar() != '\n'); // Limpiar el búfer de entrada
-    getchar(); // Esperar a que se presione Enter
+    while (getch() != '\n'); // Limpiar el búfer de entrada
+    getch(); // Esperar a que se presione Enter
 }
 
 // Funciones Menu
@@ -595,17 +596,17 @@ void leerDatosSucursal(struct Sucursal *nuevaSucursal){
     cls();
     printf("Ingrese ID de la sucursal: ");
     scanf("%d", &nuevaSucursal->id);
-    getchar(); // Limpiar el buffer de entrada después de leer un entero
+    getch(); // Limpiar el buffer de entrada después de leer un entero
 
     nuevaSucursal->nombre = (char *)malloc(50 * sizeof(char));
     printf("Ingrese nombre de la sucursal: ");
     scanf(" %[^\n]", nuevaSucursal->nombre);
-    getchar(); // Limpiar el buffer de entrada después de leer un string
+    getch(); // Limpiar el buffer de entrada después de leer un string
 
     nuevaSucursal->direccion = (char *)malloc(100 * sizeof(char));
     printf("Ingrese dirección de la sucursal: ");
     scanf(" %[^\n]", nuevaSucursal->direccion);
-    getchar(); // Limpiar el buffer de entrada después de leer un string
+    getch(); // Limpiar el buffer de entrada después de leer un string
 
     nuevaSucursal->cantidadDeVentas = 0; // Inicializar a 0
     nuevaSucursal->capacidadAlmacenamiento = 0; // Cambiar si se necesita un valor específico
@@ -678,7 +679,7 @@ void leerIdSucursal(int *idEliminar) {
     cls();
     printf("Ingrese el ID de la sucursal que desea eliminar: ");
     scanf("%d", idEliminar);
-    getchar(); // Limpiar el buffer de entrada después de leer un entero
+    getch(); // Limpiar el buffer de entrada después de leer un entero
 }
 
 void mostrarMensajeNoSucursales() {
@@ -752,7 +753,7 @@ void leerDatosProveedor(int *id, char **nombre, char **direccion, char **telefon
     cls();
     printf("Ingrese ID del proveedor: ");
     scanf("%d", id);
-    getchar();  // Consumir el salto de línea que queda en el buffer
+    getch();  // Consumir el salto de línea que queda en el buffer
 
     *nombre = (char *)malloc(50 * sizeof(char));
     if (*nombre == NULL) {
@@ -760,8 +761,8 @@ void leerDatosProveedor(int *id, char **nombre, char **direccion, char **telefon
         return;
     }
     printf("Ingrese nombre del proveedor: ");
-    getchar(); // Consumir el carácter de nueva línea
-    while ((c = getchar()) != '\n' && i < 49) {
+    getch(); // Consumir el carácter de nueva línea
+    while ((c = getch()) != '\n' && i < 49) {
         (*nombre)[i++] = c;
     }
     (*nombre)[i] = '\0';
@@ -773,9 +774,9 @@ void leerDatosProveedor(int *id, char **nombre, char **direccion, char **telefon
         return;
     }
     printf("Ingrese dirección del proveedor: ");
-    getchar(); // Consumir el carácter de nueva línea
+    getch(); // Consumir el carácter de nueva línea
     i = 0;
-    while ((c = getchar()) != '\n' && i < 99) {
+    while ((c = getch()) != '\n' && i < 99) {
         (*direccion)[i++] = c;
     }
     (*direccion)[i] = '\0';
@@ -788,9 +789,9 @@ void leerDatosProveedor(int *id, char **nombre, char **direccion, char **telefon
         return;
     }
     printf("Ingrese teléfono del proveedor: ");
-    getchar(); // Consumir el carácter de nueva línea
+    getch(); // Consumir el carácter de nueva línea
     i = 0;
-    while ((c = getchar()) != '\n' && i < 14) {
+    while ((c = getch()) != '\n' && i < 14) {
         (*telefono)[i++] = c;
     }
     (*telefono)[i] = '\0';
@@ -1006,7 +1007,7 @@ void solicitarDatosProducto(struct Producto *producto) {
     cls();
     printf("Ingrese código del producto: ");
     scanf("%s", producto->codigo);
-    getchar();
+    getch();
     cls();
     printf("Ingrese nombre del producto: ");
     gets(producto->nombreProducto);
@@ -1022,7 +1023,7 @@ void solicitarDatosProducto(struct Producto *producto) {
     cls();
     printf("Ingrese precio del producto: ");
     scanf("%d", &producto->precio);
-    getchar();
+    getch();
     cls();
     printf("\nIngrese ID del proveedor: ");
     scanf("%s", producto->idProveedor);
@@ -1427,12 +1428,6 @@ void obtenerDetallesProducto(char* fechaCaducidad, char* lote, int* cantidad, ch
     scanf("%s", lote);
     printPromptCantidad(nombreProducto);
     scanf("%d", cantidad);
-}
-
-int getch(void) {
-    int ch;
-    ch = getchar();
-    return ch;
 }
 
 void mostrarYSeleccionarProveedor(struct FarmaSalud *farmacia, int *idProveedor, struct NodoProveedor **proveedorActual) {
