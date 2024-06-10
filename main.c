@@ -3,6 +3,7 @@
  *
  * https://github.com/gioahumada/farmaSalud
  *
+ *
  * Este archivo es parte del proyecto de la asignatura INF2223-1 - Estructuras de Datos
  * y a sido diseñado por estudiantes de la PUCV para el desarrollo de un sistema de
  * gestión de inventario y ventas para una farmacia.
