@@ -2564,6 +2564,7 @@ int mesEnLista(int mes, int lista[]) {
     return 0;
 }
 
+// Función para calcular el total de transacciones de una categoría
 int totalTransaccionesDeCategoria(struct NodoProducto *ventas, char *categoria) {
     int total = 0;
     struct NodoProducto *rec = ventas;
@@ -2577,7 +2578,8 @@ int totalTransaccionesDeCategoria(struct NodoProducto *ventas, char *categoria) 
     return total;
 }
 
-char *getCategoriaMasVendidaEstacion(struct NodoProducto *ventas, char estacion) {
+// Función para obtener la categoría más vendida en una estación del año
+char* getCategoriaMasVendidaEstacion(struct NodoProducto *ventas, char estacion) {
     struct NodoProducto *rec;
     char *categoriaMasVendida = NULL;
     int maxVentas = 0, condicion, numeroMes;
@@ -2619,105 +2621,11 @@ char *getCategoriaMasVendidaEstacion(struct NodoProducto *ventas, char estacion)
     return categoriaMasVendida;
 }
 
-void calcularMasVendidoPorEstacion(struct FarmaSalud *farmacia) {
-    // Declaraciones al inicio
-    char *categoriaMasVendidaPrimavera;
-    char *categoriaMasVendidaVerano;
-    char *categoriaMasVendidaOtonio;
-    char *categoriaMasVendidaInvierno;
-    struct NodoSucursales *nodoSucursal;
-    struct NodoSucursales *primerNodoSucursal;
-    struct Sucursal *sucursal;
-    char *categoriaPrimavera;
-    char *categoriaVerano;
-    char *categoriaOtonio;
-    char *categoriaInvierno;
-
-    // Inicializaciones
-    categoriaMasVendidaPrimavera = NULL;
-    categoriaMasVendidaVerano = NULL;
-    categoriaMasVendidaOtonio = NULL;
-    categoriaMasVendidaInvierno = NULL;
-    nodoSucursal = farmacia->sucursales;
-    primerNodoSucursal = nodoSucursal;
-
-    if (farmacia == NULL || farmacia->sucursales == NULL) {
-        printf("No hay datos disponibles.\n");
-        return;
-    }
-
-    do {
-        if (nodoSucursal == NULL || nodoSucursal->datosSucursal == NULL) break;
-
-        sucursal = nodoSucursal->datosSucursal;
-
-        // Llamar a getCategoriaMasVendidaEstacion para cada estacion
-        categoriaPrimavera = getCategoriaMasVendidaEstacion(sucursal->productosVendidos, 'P');
-        categoriaVerano = getCategoriaMasVendidaEstacion(sucursal->productosVendidos, 'V');
-        categoriaOtonio = getCategoriaMasVendidaEstacion(sucursal->productosVendidos, 'O');
-        categoriaInvierno = getCategoriaMasVendidaEstacion(sucursal->productosVendidos, 'I');
-
-        // Actualizar la categoria mas vendida si es necesario
-        if (categoriaPrimavera != NULL && (categoriaMasVendidaPrimavera == NULL || 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaPrimavera) > 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaMasVendidaPrimavera))) {
-            categoriaMasVendidaPrimavera = categoriaPrimavera;
-        }
-        if (categoriaVerano != NULL && (categoriaMasVendidaVerano == NULL || 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaVerano) > 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaMasVendidaVerano))) {
-            categoriaMasVendidaVerano = categoriaVerano;
-        }
-        if (categoriaOtonio != NULL && (categoriaMasVendidaOtonio == NULL || 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaOtonio) > 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaMasVendidaOtonio))) {
-            categoriaMasVendidaOtonio = categoriaOtonio;
-        }
-        if (categoriaInvierno != NULL && (categoriaMasVendidaInvierno == NULL || 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaInvierno) > 
-            totalTransaccionesDeCategoria(sucursal->productosVendidos, categoriaMasVendidaInvierno))) {
-            categoriaMasVendidaInvierno = categoriaInvierno;
-        }
-
-        nodoSucursal = nodoSucursal->sig;
-    } while (nodoSucursal != primerNodoSucursal);
-
-    // Imprimir resultados
-    cls();
-    printf("Categoria mas vendida en Verano: ");
-    if (categoriaMasVendidaVerano != NULL) {
-        printf("%s\n", categoriaMasVendidaVerano);
-    } else {
-        printf("No hay ventas registradas.\n");
-    }
-
-    printf("Categoria mas vendida en Otoño: ");
-    if (categoriaMasVendidaOtonio != NULL) {
-        printf("%s\n", categoriaMasVendidaOtonio);
-    } else {
-        printf("No hay ventas registradas.\n");
-    }
-
-    printf("Categoria mas vendida en Invierno: ");
-    if (categoriaMasVendidaInvierno != NULL) {
-        printf("%s\n", categoriaMasVendidaInvierno);
-    } else {
-        printf("No hay ventas registradas.\n");
-    }
-
-    printf("Categoria mas vendida en Primavera: ");
-    if (categoriaMasVendidaPrimavera != NULL) {
-        printf("%s\n", categoriaMasVendidaPrimavera);
-    } else {
-        printf("No hay ventas registradas.\n");
-    }
-
-    pause();
-}
-
-int totalVentasProductoEstacion(struct NodoProducto *ventas, char *producto, char estacion) {
-    int total = 0;
+// Función para obtener el producto más vendido de una categoría en una estación del año
+char* getProductoMasVendidoDeCategoria(struct NodoProducto *ventas, char *categoria, char estacion) {
     struct NodoProducto *rec = ventas;
+    char *productoMasVendido = NULL;
+    int maxVentas = 0;
     int numeroMes, condicion;
 
     while (rec != NULL) {
@@ -2740,35 +2648,159 @@ int totalVentasProductoEstacion(struct NodoProducto *ventas, char *producto, cha
                 break;
         }
 
-        if (condicion && strcmp(rec->datosProducto->nombreProducto, producto) == 0) {
-            total += rec->datosProducto->cantidad;
+        if (condicion && strcmp(rec->datosProducto->categoria, categoria) == 0) {
+            if (rec->datosProducto->cantidad > maxVentas) {
+                maxVentas = rec->datosProducto->cantidad;
+                productoMasVendido = rec->datosProducto->nombreProducto;
+            }
         }
         rec = rec->sig;
     }
-
-    return total;
+    return productoMasVendido;
 }
 
-void ordenarProductosPorVentas(struct NodoProducto *ventas, char estacion, char *topProductos[5], int topVentas[5]) {
-    struct NodoProducto *rec = ventas;
-    int ventasProducto, i, j;
+// Función principal para calcular y mostrar la categoría y producto más vendido por estación del año
+void calcularMasVendidoPorEstacion(struct FarmaSalud *farmacia) {
+    char *categoriaMasVendidaPrimavera, *categoriaMasVendidaVerano, *categoriaMasVendidaOtonio, *categoriaMasVendidaInvierno;
+    char *productoMasVendidoPrimavera, *productoMasVendidoVerano, *productoMasVendidoOtonio, *productoMasVendidoInvierno;
+    struct NodoSucursales *nodoSucursal = farmacia->sucursales;
+    struct NodoSucursales *primerNodoSucursal = nodoSucursal;
 
-    while (rec != NULL) {
-        ventasProducto = totalVentasProductoEstacion(ventas, rec->datosProducto->nombreProducto, estacion);
+    // Inicialización de variables
+    categoriaMasVendidaPrimavera = categoriaMasVendidaVerano = categoriaMasVendidaOtonio = categoriaMasVendidaInvierno = NULL;
+    productoMasVendidoPrimavera = productoMasVendidoVerano = productoMasVendidoOtonio = productoMasVendidoInvierno = NULL;
 
-        for (i = 0; i < 5; i++) {
-            if (ventasProducto > topVentas[i]) {
-                for (j = 4; j > i; j--) {
-                    topVentas[j] = topVentas[j - 1];
-                    topProductos[j] = topProductos[j - 1];
-                }
-                topVentas[i] = ventasProducto;
-                topProductos[i] = rec->datosProducto->nombreProducto;
-                break;
-            }
+    if (farmacia == NULL || farmacia->sucursales == NULL) {
+        printf("No hay datos disponibles.\n");
+        return;
+    }
+
+    do {
+        if (nodoSucursal == NULL || nodoSucursal->datosSucursal == NULL) break;
+
+        struct NodoProducto *ventas = nodoSucursal->datosSucursal->productosVendidos;
+
+        char *categoriaPrimavera = getCategoriaMasVendidaEstacion(ventas, 'P');
+        char *categoriaVerano = getCategoriaMasVendidaEstacion(ventas, 'V');
+        char *categoriaOtonio = getCategoriaMasVendidaEstacion(ventas, 'O');
+        char *categoriaInvierno = getCategoriaMasVendidaEstacion(ventas, 'I');
+
+        // Actualización de categorías más vendidas
+        if (categoriaPrimavera != NULL && (categoriaMasVendidaPrimavera == NULL ||
+            totalTransaccionesDeCategoria(ventas, categoriaPrimavera) >
+            totalTransaccionesDeCategoria(ventas, categoriaMasVendidaPrimavera))) {
+            categoriaMasVendidaPrimavera = categoriaPrimavera;
+        }
+        if (categoriaVerano != NULL && (categoriaMasVendidaVerano == NULL ||
+            totalTransaccionesDeCategoria(ventas, categoriaVerano) >
+            totalTransaccionesDeCategoria(ventas, categoriaMasVendidaVerano))) {
+            categoriaMasVendidaVerano = categoriaVerano;
+        }
+        if (categoriaOtonio != NULL && (categoriaMasVendidaOtonio == NULL ||
+            totalTransaccionesDeCategoria(ventas, categoriaOtonio) >
+            totalTransaccionesDeCategoria(ventas, categoriaMasVendidaOtonio))) {
+            categoriaMasVendidaOtonio = categoriaOtonio;
+        }
+        if (categoriaInvierno != NULL && (categoriaMasVendidaInvierno == NULL ||
+            totalTransaccionesDeCategoria(ventas, categoriaInvierno) >
+            totalTransaccionesDeCategoria(ventas, categoriaMasVendidaInvierno))) {
+            categoriaMasVendidaInvierno = categoriaInvierno;
         }
 
-        rec = rec->sig;
+        // Obtención de productos más vendidos por categoría en cada estación
+        productoMasVendidoPrimavera = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaPrimavera, 'P');
+        productoMasVendidoVerano = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaVerano, 'V');
+        productoMasVendidoOtonio = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaOtonio, 'O');
+        productoMasVendidoInvierno = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaInvierno, 'I');
+
+        nodoSucursal = nodoSucursal->sig;
+    } while (nodoSucursal != primerNodoSucursal);
+
+    // Impresión de resultados
+    printf("Verano:\n");
+    if (categoriaMasVendidaVerano != NULL) {
+        printf("  Categoria mas vendida: %s\n", categoriaMasVendidaVerano);
+        if (productoMasVendidoVerano != NULL) {
+            printf("  Producto mas vendido: %s\n", productoMasVendidoVerano);
+        } else {
+            printf("  No hay productos vendidos registrados.\n");
+        }
+    } else {
+        printf("  No hay ventas registradas.\n");
+    }
+
+    printf("\nOtonio:\n");
+    if (categoriaMasVendidaOtonio != NULL) {
+        printf("  Categoria mas vendida: %s\n", categoriaMasVendidaOtonio);
+        if (productoMasVendidoOtonio != NULL) {
+            printf("  Producto mas vendido: %s\n", productoMasVendidoOtonio);
+        } else {
+            printf("  No hay productos vendidos registrados.\n");
+        }
+    } else {
+        printf("  No hay ventas registradas.\n");
+    }
+
+    printf("\nInvierno:\n");
+    if (categoriaMasVendidaInvierno != NULL) {
+        printf("  Categoria mas vendida: %s\n", categoriaMasVendidaInvierno);
+        if (productoMasVendidoInvierno != NULL) {
+            printf("  Producto mas vendido: %s\n", productoMasVendidoInvierno);
+        } else {
+            printf("  No hay productos vendidos registrados.\n");
+        }
+    } else {
+        printf("  No hay ventas registradas.\n");
+    }
+
+    printf("\nPrimavera:\n");
+    if (categoriaMasVendidaPrimavera != NULL) {
+        printf("  Categoria mas vendida: %s\n", categoriaMasVendidaPrimavera);
+        if (productoMasVendidoPrimavera != NULL) {
+            printf("  Producto mas vendido: %s\n", productoMasVendidoPrimavera);
+        } else {
+            printf("  No hay productos vendidos registrados.\n");
+        }
+    } else {
+        printf("  No hay ventas registradas.\n");
+    }
+
+    pause();
+}
+
+int productoPerteneceAEstacion(int mesVenta, char estacion) {
+    switch (estacion) {
+        case 'P':
+            return (mesVenta == 9 || mesVenta == 10 || mesVenta == 11);
+        case 'V':
+            return (mesVenta == 12 || mesVenta == 1 || mesVenta == 2);
+        case 'O':
+            return (mesVenta == 3 || mesVenta == 4 || mesVenta == 5);
+        case 'I':
+            return (mesVenta == 6 || mesVenta == 7 || mesVenta == 8);
+        default:
+            return 0;
+    }
+}
+
+void ordenarProductosPorVentas(struct NodoProducto *ventas, char estacion, char *topProductos[], int topVentas[]) {
+    while (ventas != NULL) {
+        struct Producto *producto = ventas->datosProducto;
+        if (producto != NULL && productoPerteneceAEstacion(producto->mesVenta, estacion)) {
+            int j;
+            for (j = 0; j < 5; j++) {
+                if (producto->cantidad > topVentas[j]) {
+                    for (int k = 4; k > j; k--) {
+                        topProductos[k] = topProductos[k - 1];
+                        topVentas[k] = topVentas[k - 1];
+                    }
+                    topProductos[j] = producto->nombreProducto;
+                    topVentas[j] = producto->cantidad;
+                    break;
+                }
+            }
+        }
+        ventas = ventas->sig;
     }
 }
 
@@ -2781,6 +2813,14 @@ void mostrarTopProductosPorEstacion(struct FarmaSalud *farmaSalud) {
     struct NodoSucursales *sucursal;
     struct NodoProducto *ventas = NULL;
 
+    if (!farmaSalud || !farmaSalud->sucursales) {
+        cls();
+        printf("No hay Sucursales disponibles.\n");
+        pause();
+        return;
+    }
+
+    cls();
     printf("Selecciona la estación:\n");
     printf("1. Primavera\n");
     printf("2. Verano\n");
@@ -2817,16 +2857,27 @@ void mostrarTopProductosPorEstacion(struct FarmaSalud *farmaSalud) {
     sucursal = farmaSalud->sucursales;
     while (sucursal != NULL) {
         ventas = sucursal->datosSucursal->productosVendidos;
-        ordenarProductosPorVentas(ventas, estacion, topProductos, topVentas);
+        if (ventas != NULL) {
+            ordenarProductosPorVentas(ventas, estacion, topProductos, topVentas);
+        }
         sucursal = sucursal->sig;
     }
 
     // Imprimir resultados
+    int hayProductos = 0;
     printf("\nTop 5 productos vendidos en la estación seleccionada:\n");
     for (i = 0; i < 5; i++) {
+        if (topVentas[i] > 0) {
+            hayProductos = 1;
+        }
         printf("Top %d: %s con %d ventas\n", i + 1, topProductos[i], topVentas[i]);
     }
+
+    if (!hayProductos) {
+        printf("No hay productos vendidos en la estación seleccionada.\n");
+    }
 }
+
 
 // Funcion para mostrar el total de sucursales y ventas totales
 void mostrarTotalSucursalesVentas(struct FarmaSalud *farmaSalud) {
@@ -3066,16 +3117,60 @@ void generarDatosDePrueba(struct FarmaSalud *farmacia) {
     agregarProductoASucursal(sucursal3->datosSucursal, prod4);
     agregarProductoASucursal(sucursal3->datosSucursal, prod5);
     agregarProductoASucursal(sucursal3->datosSucursal, prod6);
+
+    cls();
+    printf("\nDatos de prueba generados exitosamente.\n");
+    pause();
     return;
 }
 
-// Funcion del submenu de Clientes
-void menuClientes(struct FarmaSalud *farmacia) {
+void menuSucursal(struct FarmaSalud *farmacia) {
     int opcion;
     while (1) {
         cls();
-        printf("\n------ Clientes -----\n");
-        printf("1. Leer Clientes\n");
+        printf("\n------ Sucursal -----\n");
+        printf("1. Leer Sucursales\n");
+        printf("2. Crear Sucursal\n");
+        printf("3. Eliminar Sucursal\n");
+        printf("4. Actualizar Sucursales\n");
+        printf("5. Agregar Producto a Sucursal\n");
+        printf("6. Volver al Menu Principal\n");
+        printf("---------------------\n");
+        printf("\nSeleccione una opcion: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
+                leerSucursales(farmacia);
+                break;
+            case 2:
+                crearSucursal(farmacia);
+                break;
+            case 3:
+                eliminarSucursalView(farmacia);
+                break;
+            case 4:
+                actualizarInventariosSucursales(farmacia);
+                break;
+            case 5:
+                transferirProductoProveedorASucursal(farmacia);
+                break;
+            case 6:
+                return; // Volver al menu principal
+            default:
+                printf("Opcion no valida. Intente nuevamente.\n");
+                pause();
+                break;
+        }
+    }
+}
+
+void menuCliente(struct FarmaSalud *farmacia) {
+    int opcion;
+    while (1) {
+        cls();
+        printf("\n------ Cliente -----\n");
+        printf("1. Leer Cliente\n");
         printf("2. Crear Cliente\n");
         printf("3. Eliminar Cliente\n");
         printf("4. Volver al Menu Principal\n");
@@ -3103,65 +3198,27 @@ void menuClientes(struct FarmaSalud *farmacia) {
     }
 }
 
-// Funcion del submenu de Sucursal
-void menuSucursal(struct FarmaSalud *farmacia) {
-    int opcion;
-    while (1) {
-        cls();
-        printf("\n------ Sucursal -----\n");
-        printf("1. Actualizar Sucursales\n");
-        printf("2. Leer Sucursales\n");
-        printf("3. Crear Sucursal\n");
-        printf("4. Eliminar Sucursal\n");
-        printf("5. Volver al Menu Principal\n");
-        printf("---------------------\n");
-        printf("\nSeleccione una opcion: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
-                actualizarInventariosSucursales(farmacia);
-                break;
-            case 2:
-                leerSucursales(farmacia);
-                break;
-            case 3:
-                crearSucursal(farmacia);
-                break;
-            case 4:
-                eliminarSucursalView(farmacia);
-                break;
-            case 5:
-                return; // Volver al menu principal
-            default:
-                printf("Opcion no valida. Intente nuevamente.\n");
-                pause();
-                break;
-        }
-    }
-}
-
-// Funcion del submenu de Proveedor
 void menuProveedor(struct FarmaSalud *farmacia) {
     int opcion;
     while (1) {
         cls();
         printf("\n------ Proveedor -----\n");
-        printf("1. Crear Proveedor\n");
-        printf("2. Leer Proveedor\n");
+        printf("1. Leer Proveedor\n");
+        printf("2. Crear Proveedor\n");
         printf("3. Eliminar Proveedor\n");
         printf("4. Agregar Producto a Proveedor\n");
-        printf("5. Volver al Menu Principal\n");
+        printf("5. Transferir Productos de Proveedor a Sucursal\n");
+        printf("6. Volver al Menu Principal\n");
         printf("----------------------\n");
         printf("\nSeleccione una opcion: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
-                crearProveedorView(farmacia);
+                leerProveedores(farmacia);
                 break;
             case 2:
-                leerProveedores(farmacia);
+                crearProveedorView(farmacia);
                 break;
             case 3:
                 eliminarProveedor(farmacia);
@@ -3170,45 +3227,9 @@ void menuProveedor(struct FarmaSalud *farmacia) {
                 agregarProductoProveedor(farmacia);
                 break;
             case 5:
-                return; // Volver al menu principal
-            default:
-                printf("Opcion no valida. Intente nuevamente.\n");
-                pause();
-                break;
-        }
-    }
-}
-
-// Funcion del submenu de Stock
-void menuStock(struct FarmaSalud *farmacia) {
-    int opcion;
-    while (1) {
-        cls();
-        printf("\n------ Stock -----\n");
-        printf("1. Transferir Productos de Proveedor a Sucursal\n");
-        printf("2. Agregar Producto a Sucursal\n");
-        printf("3. Eliminar Productos Vencidos\n");
-        printf("4. Realizar Compra\n");
-        printf("5. Volver al Menu Principal\n");
-        printf("------------------\n");
-        printf("\nSeleccione una opcion: ");
-        scanf("%d", &opcion);
-
-        switch (opcion) {
-            case 1:
                 transferirProductosProveedorASucursal(farmacia);
                 break;
-            case 2:
-                transferirProductoProveedorASucursal(farmacia);
-                break;
-            case 3:
-                menuEliminarProductosVencidos(farmacia);
-                break;
-            case 4:
-                realizarCompra(farmacia);
-                actualizarInventariosSucursales(farmacia);
-                break;
-            case 5:
+            case 6:
                 return; // Volver al menu principal
             default:
                 printf("Opcion no valida. Intente nuevamente.\n");
@@ -3218,21 +3239,19 @@ void menuStock(struct FarmaSalud *farmacia) {
     }
 }
 
-// Funcion del submenu de Informes
 void menuInformes(struct FarmaSalud *farmacia) {
     int opcion;
     while (1) {
         cls();
         printf("\n------ Informes -----\n");
         printf("1. Ver Informes\n");
-        printf("2. Generar Datos de Prueba\n");
-        printf("3. Calcular producto mas vendido por estacion del año\n");
-        printf("4. Mostrar Total de Sucursales y Ventas\n");
-        printf("5. Mostrar Promedio de Ventas por Sucursal\n");
-        printf("6. Mostrar Sucursal con mas Ventas\n");
-        printf("7. Mostrar Sucursal con menos Ventas\n");
-        printf("8. Mostrar Top Productos Por Estacion\n");
-        printf("9. Volver al Menu Principal\n");
+        printf("2. Calcular categoria más vendida por Estación del Año\n");
+        printf("3. Mostrar Total de Sucursales y Ventas\n");
+        printf("4. Mostrar Promedio de Ventas por Sucursal\n");
+        printf("5. Mostrar Sucursal con Más Ventas\n");
+        printf("6. Mostrar Sucursal con Menos Ventas\n");
+        printf("7. Mostrar Top Productos por Estación\n");
+        printf("8. Volver al Menu Principal\n");
         printf("---------------------\n");
         printf("\nSeleccione una opcion: ");
         scanf("%d", &opcion);
@@ -3245,30 +3264,25 @@ void menuInformes(struct FarmaSalud *farmacia) {
                 mostrarPorcentajeSucursalesConVentasBajoPromedio(farmacia);
                 break;
             case 2:
-                generarDatosDePrueba(farmacia);
-                printf("\nDatos de prueba generados exitosamente.\n");
-                pause();
-                break;
-            case 3:
                 calcularMasVendidoPorEstacion(farmacia);
                 break;
-            case 4:
+            case 3:
                 mostrarTotalSucursalesVentas(farmacia);
                 break;
-            case 5:
+            case 4:
                 mostrarPromedioVentas(farmacia);
                 break;
-            case 6:
-                mostrarSucursalMasVentas(farmacia);
+            case 5:
+                mostrarSucursalConMasVentas(farmacia);
                 break;
-            case 7:
+            case 6:
                 mostrarSucursalMenosVentas(farmacia);
                 break;
-            case 8:
+            case 7:
                 mostrarTopProductosPorEstacion(farmacia);
                 break;
-            case 9:
-                return;
+            case 8:
+                return; // Volver al menu principal
             default:
                 printf("Opcion no valida. Intente nuevamente.\n");
                 pause();
@@ -3277,40 +3291,74 @@ void menuInformes(struct FarmaSalud *farmacia) {
     }
 }
 
-// Funcion del menu principal
-int menuPrincipal(struct FarmaSalud *farmacia) {
+void menuAdministrador(struct FarmaSalud *farmacia) {
     int opcion;
     while (1) {
         cls();
-        printf("\n  ----- FarmaSalud -----\n");
-        printf("--------------------------\n");
-        printf("1. Clientes\n");
-        printf("2. Sucursal\n");
-        printf("3. Proveedor\n");
-        printf("4. Stock\n");
-        printf("5. Informes\n");
-        printf("6. Salida\n");
+        printf("\n------ Administrador -----\n");
+        printf("1. Realizar Compra\n");
+        printf("2. Eliminar Productos Vencidos\n");
+        printf("3. Generar Datos de Prueba\n");
+        printf("4. Acceder Menu Informes\n");
+        printf("5. Volver al Menu Principal\n");
         printf("--------------------------\n");
         printf("\nSeleccione una opcion: ");
         scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
-                menuClientes(farmacia);
+                realizarCompra(farmacia);
+                actualizarInventariosSucursales(farmacia);
                 break;
             case 2:
+                menuEliminarProductosVencidos(farmacia);
+                break;
+            case 3:
+                generarDatosDePrueba(farmacia);
+                break;
+            case 4:
+                menuInformes(farmacia);
+                break;
+            case 5:
+                return; // Volver al menu principal
+            default:
+                printf("Opcion no valida. Intente nuevamente.\n");
+                pause();
+                break;
+        }
+    }
+}
+
+
+int menuPrincipal(struct FarmaSalud *farmacia) {
+    int opcion;
+    while (1) {
+        cls();
+        printf("\n  ----- FarmaSalud -----\n");
+        printf("--------------------------\n");
+        printf("1. Sucursal\n");
+        printf("2. Cliente\n");
+        printf("3. Proveedor\n");
+        printf("4. Administrador\n");
+        printf("5. Salida\n");
+        printf("--------------------------\n");
+        printf("\nSeleccione una opcion: ");
+        scanf("%d", &opcion);
+
+        switch (opcion) {
+            case 1:
                 menuSucursal(farmacia);
+                break;
+            case 2:
+                menuCliente(farmacia);
                 break;
             case 3:
                 menuProveedor(farmacia);
                 break;
             case 4:
-                menuStock(farmacia);
+                menuAdministrador(farmacia);
                 break;
             case 5:
-                menuInformes(farmacia);
-                break;
-            case 6:
                 printf("Saliendo...\n");
                 return 0; // Salir del programa
             default:
