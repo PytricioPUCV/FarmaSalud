@@ -2374,6 +2374,7 @@ void mostrarSucursalConMasVentas(struct FarmaSalud *farmaSalud) {
     if (!farmaSalud || !farmaSalud->sucursales) {
         cls();
         printf("\nNo existen sucursales en el sistema.\n");
+        pause();
         return;
     }
 
@@ -2792,14 +2793,15 @@ void menuStock(struct FarmaSalud *farmacia) {
     }
 }
 
-// Funcion del submenu de Informes
+// Función del submenu de Informes
 void menuInformes(struct FarmaSalud *farmacia) {
     int opcion;
     while (1) {
         cls();
         printf("\n------ Informes -----\n");
         printf("1. Ver Informes\n");
-        printf("2. Volver al Menu Principal\n");
+        printf("2. Generar Datos de Prueba\n");
+        printf("3. Volver al Menu Principal\n");
         printf("---------------------\n");
         printf("\nSeleccione una opcion: ");
         scanf("%d", &opcion);
@@ -2812,6 +2814,11 @@ void menuInformes(struct FarmaSalud *farmacia) {
                 mostrarPorcentajeSucursalesConVentasBajoPromedio(farmacia);
                 break;
             case 2:
+                generarDatosDePrueba(farmacia);
+                printf("\nDatos de prueba generados exitosamente.\n");
+                pause();
+                break;
+            case 3:
                 return; // Volver al menu principal
             default:
                 printf("Opcion no valida. Intente nuevamente.\n");
@@ -2873,8 +2880,6 @@ int main() {
     farmacia->clientes = NULL;
     farmacia->sucursales = NULL;
     farmacia->proveedores = NULL;
-
-    //generarDatosDePrueba(farmacia);
 
     // Ejecutar el menu principal una vez
     menuPrincipal(farmacia);
