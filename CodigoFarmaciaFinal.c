@@ -605,14 +605,15 @@ void mostrarSucursal(struct NodoSucursales *nodoActual) {
         printf("Productos:\n");
         productoNodo = nodoActual->datosSucursal->productos;
         while (productoNodo != NULL) {
-            printf("\t%s - %s", productoNodo->datosProducto->codigo, productoNodo->datosProducto->nombreProducto);
-            printf("\tCantidad en stock: %d", productoNodo->datosProducto->cantidad);
-            printf("\tFecha de caducidad: %s", productoNodo->datosProducto->fechaCaducidad);
+            printf("\tCódigo: %s\n", productoNodo->datosProducto->codigo);
+            printf("\tNombre: %s\n", productoNodo->datosProducto->nombreProducto);
+            printf("\tCantidad en stock: %d\n", productoNodo->datosProducto->cantidad);
+            printf("\tFecha de caducidad: %s\n", productoNodo->datosProducto->fechaCaducidad);
             printf("\tLote: %s\n", productoNodo->datosProducto->lote);
 
             // Comprobar si el producto tiene bajo stock
             if (productoNodo->datosProducto->cantidad < 10) {
-                printf("\t*** ALERTA: Bajo stock! ***\n");
+                printf("\t*** ALERTA: Bajo stock! ***\n\n");
             }
 
             productoNodo = productoNodo->sig;
@@ -622,6 +623,7 @@ void mostrarSucursal(struct NodoSucursales *nodoActual) {
         printf("Sucursal sin productos\n");
     }
 }
+
 
 void mostrarEspacioRestante(int espacio) {
     printf("Espacio restante en la sucursal: %d\n\n", espacio);
@@ -2192,6 +2194,8 @@ void realizarCompra(struct FarmaSalud *farmacia) {
     cantidades = (int *)malloc(cantidadCompras * sizeof(int));
     productosRequierenReceta = (int *)malloc(cantidadCompras * sizeof(int));
 
+    // Mostrar los productos disponibles en la sucursal seleccionada
+    mostrarSucursal(sucursal);
     for (i = 0; i < cantidadCompras; i++) {
         printIngreseCodigoProducto(i);
         if (scanf("%s", codigoProducto) != 1) {
@@ -2621,48 +2625,10 @@ char* getCategoriaMasVendidaEstacion(struct NodoProducto *ventas, char estacion)
     return categoriaMasVendida;
 }
 
-// Función para obtener el producto más vendido de una categoría en una estación del año
-char* getProductoMasVendidoDeCategoria(struct NodoProducto *ventas, char *categoria, char estacion) {
-    struct NodoProducto *rec = ventas;
-    char *productoMasVendido = NULL;
-    int maxVentas = 0;
-    int numeroMes, condicion;
-
-    while (rec != NULL) {
-        numeroMes = rec->datosProducto->mesVenta;
-        switch (estacion) {
-            case 'P': // Primavera
-                condicion = numeroMes >= 9 && numeroMes <= 11;
-                break;
-            case 'V': // Verano
-                condicion = numeroMes == 12 || numeroMes <= 2;
-                break;
-            case 'O': // Otoño
-                condicion = numeroMes >= 3 && numeroMes <= 5;
-                break;
-            case 'I': // Invierno
-                condicion = numeroMes >= 6 && numeroMes <= 8;
-                break;
-            default:
-                condicion = 0;
-                break;
-        }
-
-        if (condicion && strcmp(rec->datosProducto->categoria, categoria) == 0) {
-            if (rec->datosProducto->cantidad > maxVentas) {
-                maxVentas = rec->datosProducto->cantidad;
-                productoMasVendido = rec->datosProducto->nombreProducto;
-            }
-        }
-        rec = rec->sig;
-    }
-    return productoMasVendido;
-}
 
 // Función principal para calcular y mostrar la categoría y producto más vendido por estación del año
 void calcularMasVendidoPorEstacion(struct FarmaSalud *farmacia) {
     char *categoriaMasVendidaPrimavera, *categoriaMasVendidaVerano, *categoriaMasVendidaOtonio, *categoriaMasVendidaInvierno;
-    char *productoMasVendidoPrimavera, *productoMasVendidoVerano, *productoMasVendidoOtonio, *productoMasVendidoInvierno;
     struct NodoSucursales *nodoSucursal;
     struct NodoSucursales *primerNodoSucursal;
     struct NodoProducto *ventas;
@@ -2670,7 +2636,6 @@ void calcularMasVendidoPorEstacion(struct FarmaSalud *farmacia) {
 
     // Inicialización de variables
     categoriaMasVendidaPrimavera = categoriaMasVendidaVerano = categoriaMasVendidaOtonio = categoriaMasVendidaInvierno = NULL;
-    productoMasVendidoPrimavera = productoMasVendidoVerano = productoMasVendidoOtonio = productoMasVendidoInvierno = NULL;
 
     if (farmacia == NULL || farmacia->sucursales == NULL) {
         printf("No hay datos disponibles.\n");
@@ -2712,65 +2677,43 @@ void calcularMasVendidoPorEstacion(struct FarmaSalud *farmacia) {
             categoriaMasVendidaInvierno = categoriaInvierno;
         }
 
-        // Obtención de productos más vendidos por categoría en cada estación
-        productoMasVendidoPrimavera = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaPrimavera, 'P');
-        productoMasVendidoVerano = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaVerano, 'V');
-        productoMasVendidoOtonio = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaOtonio, 'O');
-        productoMasVendidoInvierno = getProductoMasVendidoDeCategoria(ventas, categoriaMasVendidaInvierno, 'I');
-
         nodoSucursal = nodoSucursal->sig;
     } while (nodoSucursal != primerNodoSucursal);
 
     // Impresión de resultados
+    cls();
     printf("Verano:\n");
     if (categoriaMasVendidaVerano != NULL) {
         printf("  Categoria mas vendida: %s\n", categoriaMasVendidaVerano);
-        if (productoMasVendidoVerano != NULL) {
-            printf("  Producto mas vendido: %s\n", productoMasVendidoVerano);
-        } else {
-            printf("  No hay productos vendidos registrados.\n");
-        }
-    } else {
+    }
+    else {
         printf("  No hay ventas registradas.\n");
     }
 
     printf("\nOtonio:\n");
     if (categoriaMasVendidaOtonio != NULL) {
         printf("  Categoria mas vendida: %s\n", categoriaMasVendidaOtonio);
-        if (productoMasVendidoOtonio != NULL) {
-            printf("  Producto mas vendido: %s\n", productoMasVendidoOtonio);
-        } else {
-            printf("  No hay productos vendidos registrados.\n");
-        }
-    } else {
+    }
+    else {
         printf("  No hay ventas registradas.\n");
     }
 
     printf("\nInvierno:\n");
     if (categoriaMasVendidaInvierno != NULL) {
         printf("  Categoria mas vendida: %s\n", categoriaMasVendidaInvierno);
-        if (productoMasVendidoInvierno != NULL) {
-            printf("  Producto mas vendido: %s\n", productoMasVendidoInvierno);
-        } else {
-            printf("  No hay productos vendidos registrados.\n");
-        }
-    } else {
+    }
+    else {
         printf("  No hay ventas registradas.\n");
     }
 
     printf("\nPrimavera:\n");
     if (categoriaMasVendidaPrimavera != NULL) {
         printf("  Categoria mas vendida: %s\n", categoriaMasVendidaPrimavera);
-        if (productoMasVendidoPrimavera != NULL) {
-            printf("  Producto mas vendido: %s\n", productoMasVendidoPrimavera);
-        } else {
-            printf("  No hay productos vendidos registrados.\n");
-        }
-    } else {
+    } 
+    else {
         printf("  No hay ventas registradas.\n");
     }
-
-    printf("Presiona cualquier tecla para continuar...");
+    printf("\n");
     pause();
 }
 
