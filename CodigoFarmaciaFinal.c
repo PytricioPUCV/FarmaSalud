@@ -1393,7 +1393,7 @@ void printProductosTransferidos(int idProveedor, int idSucursal) {
     printf("Productos transferidos del proveedor con ID %d a la sucursal con ID %d.\n", idProveedor, idSucursal);
 }
 
-// Funciones principales
+// Funcion para obtener la fecha
 void obtenerFecha(char *fecha) {
     int dia, mes;
     printIngresarMes();
@@ -1403,6 +1403,7 @@ void obtenerFecha(char *fecha) {
     sprintf(fecha, "%02d/%02d", mes, dia);
 }
 
+// Funcion para concatenar dos cadenas
 void my_strcat(char *dest, const char *src) {
     while (*dest) {
         dest++;
@@ -1415,6 +1416,7 @@ void my_strcat(char *dest, const char *src) {
     *dest = '\0';
 }
 
+// Funcion para agregar un registro de envio a una sucursal
 void agregarRegistroEnvio(struct Sucursal *sucursal, const char *proveedorNombre) {
     char fecha[6];
     char registro[200];
@@ -1440,6 +1442,7 @@ void agregarRegistroEnvio(struct Sucursal *sucursal, const char *proveedorNombre
     }
 }
 
+// Funcion para buscar una sucursal por ID
 struct NodoSucursales* buscarSucursalPorID(struct FarmaSalud *farmacia, int idSucursal) {
     struct NodoSucursales *sucursalActual;
     struct NodoSucursales *inicio;
@@ -1460,6 +1463,7 @@ struct NodoSucursales* buscarSucursalPorID(struct FarmaSalud *farmacia, int idSu
     return NULL;
 }
 
+// Funcion para buscar un proveedor por ID
 struct NodoProveedor* buscarProveedorPorID(struct FarmaSalud *farmacia, int idProveedor) {
     struct NodoProveedor *proveedorActual;
     proveedorActual = farmacia->proveedores;
@@ -1485,6 +1489,7 @@ void mostrarSucursales(struct FarmaSalud *farmacia) {
     } while (sucursalActual != farmacia->sucursales);
 }
 
+// Funcion para transferir productos de un proveedor a una sucursal
 void transferirProductosProveedorASucursal(struct FarmaSalud *farmacia) {
     struct NodoProveedor *proveedorActual;
     struct NodoSucursales *sucursalActual;
@@ -1596,7 +1601,7 @@ void transferirProductosProveedorASucursal(struct FarmaSalud *farmacia) {
     pause();
     cls();
 }
-//FUNCION HECHA POR MI/
+
 void printPromptFechaVencimiento(char* nombreProducto) {
     printf("Ingrese la fecha de vencimiento para el producto (formato MM/AAAA) [%s]: ", nombreProducto);
 }
@@ -1696,6 +1701,7 @@ void mostrarYSeleccionarProducto(struct NodoProveedor *proveedorActual, char *co
     }
 }
 
+// funcion tranferir producto de proveedor a sucursal
 void transferirProductoProveedorASucursal(struct FarmaSalud *farmacia)
 {
     struct NodoProveedor *proveedorActual;
@@ -1778,13 +1784,13 @@ void transferirProductoProveedorASucursal(struct FarmaSalud *farmacia)
     //printCamion();
     pause();
 }
-// FUNCION HECHA POR BASTIAN
 
-// Patricio v v v v v v
+// Funcion para extraer el mes y anio de una fecha en formato MM/AAAA
 void extraerFecha(const char *fecha, int *mes, int *anio) {
     sscanf(fecha, "%d/%d", mes, anio);
 }
 
+// Funcion para comparar dos fechas en formato MM/AAAA
 void imprimirSucursalOProductosInvalidos() {
     printf("Sucursal o productos no validos.\n");
 }
@@ -1818,9 +1824,6 @@ void imprimirIngreseIDSucursal() {
 void imprimirIngreseFechaVencimiento() {
     printf("Ingrese la fecha de vencimiento (MM/AAAA): ");
 }
-
-
-
 
 int compararFechasVencidas(const char *fecha1, const char *fecha2) {
     int mes1, anio1, mes2, anio2;
@@ -1904,7 +1907,6 @@ void eliminarProductosVencidosDeTodasLasSucursales(struct FarmaSalud *farmacia, 
     imprimirProductosVencidosEliminadosDeTodasLasSucursales();
     pause();
 }
-
 
 void menuEliminarProductosVencidos(struct FarmaSalud *farmacia) {
     int idSucursal;
@@ -2322,7 +2324,6 @@ void realizarCompra(struct FarmaSalud *farmacia) {
     pause();
 }
 
-// Giovanni v v v v v v
 // Controlador
 void eliminarProducto(struct NodoProducto **productoActual, struct NodoSucursales *sucursalActual) {
     struct NodoProducto *siguienteProducto;
@@ -2630,7 +2631,6 @@ char* getCategoriaMasVendidaEstacion(struct NodoProducto *ventas, char estacion)
     return categoriaMasVendida;
 }
 
-
 // Funcion principal para calcular y mostrar la categoria y producto mas vendido por estacion del año
 void calcularMasVendidoPorEstacion(struct FarmaSalud *farmacia) {
     char *categoriaMasVendidaPrimavera, *categoriaMasVendidaVerano, *categoriaMasVendidaOtonio, *categoriaMasVendidaInvierno;
@@ -2761,7 +2761,6 @@ void ordenarProductosPorVentas(struct NodoProducto *ventas, char estacion, char 
     }
 }
 
-
 // Funcion para mostrar el total de sucursales y ventas totales
 void mostrarTotalSucursalesVentas(struct FarmaSalud *farmaSalud) {
     struct NodoSucursales *rec;
@@ -2847,7 +2846,6 @@ void mostrarSucursalMasVentas(struct FarmaSalud *farmaSalud) {
     printf("\nSucursal con mas ventas (ID): %d\n", idSucursalMaxVentas);
     pause();
 }
-
 
 // Funcion para encontrar la sucursal con menos ventas
 void mostrarSucursalMenosVentas(struct FarmaSalud *farmaSalud) {
@@ -3208,7 +3206,6 @@ void menuAdministrador(struct FarmaSalud *farmacia) {
     }
 }
 
-
 int menuPrincipal(struct FarmaSalud *farmacia) {
     int opcion;
     while (1) {
@@ -3251,7 +3248,6 @@ int menuPrincipal(struct FarmaSalud *farmacia) {
 int main() {
     struct FarmaSalud *farmacia;
     farmacia = (struct FarmaSalud *)malloc(sizeof(struct FarmaSalud));
-
 
     farmacia->clientes = NULL;
     farmacia->sucursales = NULL;
