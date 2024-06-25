@@ -2761,81 +2761,6 @@ void ordenarProductosPorVentas(struct NodoProducto *ventas, char estacion, char 
     }
 }
 
-void mostrarTopProductosPorEstacion(struct FarmaSalud *farmaSalud) {
-    char *topProductos[5];
-    int topVentas[5];
-    int i;
-    char estacion;
-    int opcion;
-    int hayProductos;
-    struct NodoSucursales *sucursal;
-    struct NodoProducto *ventas = NULL;
-
-    if (!farmaSalud || !farmaSalud->sucursales) {
-        cls();
-        printf("No hay Sucursales disponibles.\n");
-        pause();
-        return;
-    }
-
-    cls();
-    printf("Selecciona la estacion:\n");
-    printf("1. Primavera\n");
-    printf("2. Verano\n");
-    printf("3. Otoño\n");
-    printf("4. Invierno\n");
-    printf("Opcion: ");
-    scanf("%d", &opcion);
-
-    switch (opcion) {
-        case 1:
-            estacion = 'P';
-            break;
-        case 2:
-            estacion = 'V';
-            break;
-        case 3:
-            estacion = 'O';
-            break;
-        case 4:
-            estacion = 'I';
-            break;
-        default:
-            printf("Opcion no valida.\n");
-            return;
-    }
-
-    // Inicializaciones
-    for (i = 0; i < 5; i++) {
-        topProductos[i] = "N/A";
-        topVentas[i] = 0;
-    }
-
-    // Recorremos todas las sucursales para obtener los productos vendidos
-    sucursal = farmaSalud->sucursales;
-    while (sucursal != NULL) {
-        ventas = sucursal->datosSucursal->productosVendidos;
-        if (ventas != NULL) {
-            ordenarProductosPorVentas(ventas, estacion, topProductos, topVentas);
-        }
-        sucursal = sucursal->sig;
-    }
-
-    // Imprimir resultados
-    hayProductos = 0;
-    printf("\nTop 5 productos vendidos en la estacion seleccionada:\n");
-    for (i = 0; i < 5; i++) {
-        if (topVentas[i] > 0) {
-            hayProductos = 1;
-        }
-        printf("Top %d: %s con %d ventas\n", i + 1, topProductos[i], topVentas[i]);
-    }
-
-    if (!hayProductos) {
-        printf("No hay productos vendidos en la estacion seleccionada.\n");
-    }
-}
-
 
 // Funcion para mostrar el total de sucursales y ventas totales
 void mostrarTotalSucursalesVentas(struct FarmaSalud *farmaSalud) {
@@ -3208,8 +3133,7 @@ void menuInformes(struct FarmaSalud *farmacia) {
         printf("4. Mostrar Promedio de Ventas por Sucursal\n");
         printf("5. Mostrar Sucursal con Mas Ventas\n");
         printf("6. Mostrar Sucursal con Menos Ventas\n");
-        printf("7. Mostrar Top Productos por Estacion\n");
-        printf("8. Volver al Menu Principal\n");
+        printf("7. Volver al Menu Principal\n");
         printf("---------------------\n");
         printf("\nSeleccione una opcion: ");
         scanf("%d", &opcion);
@@ -3237,9 +3161,6 @@ void menuInformes(struct FarmaSalud *farmacia) {
                 mostrarSucursalMenosVentas(farmacia);
                 break;
             case 7:
-                mostrarTopProductosPorEstacion(farmacia);
-                break;
-            case 8:
                 return; // Volver al menu principal
             default:
                 printf("Opcion no valida. Intente nuevamente.\n");
